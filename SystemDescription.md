@@ -16,29 +16,29 @@
 	Potreban za alat cmake, sadrži potrebne parametre za prevođenje programa
 * ai_intervali:
 	* enum class VredResetke : char:
-		Definiše rešetku.
+		>Definiše rešetku.
 	* class AIProlaz : public FunctionPass:
-		Klasa koja definiše LLVM prolaz (LLVM Pass), glavna klasa.
+		>Klasa koja definiše LLVM prolaz (LLVM Pass), glavna klasa.
 	* bool runOnFunction(Function& F) override:
-		Funkcija koja sve pokreće, definisana je u LLVM biblioteci te mora override.
+		>Funkcija koja sve pokreće, definisana je u LLVM biblioteci te mora override.
 	* std::pair<VredResetke, ConstantRange*> _obradjenaVred(Value* vred):
-		Funkcija koja obrađuje elemente programa i u zavisnosti od tipa dodeljuje adekvatne vrednosti rešetke.
+		>Funkcija koja obrađuje elemente programa i u zavisnosti od tipa dodeljuje adekvatne vrednosti rešetke.
 	* std::pair<VredResetke, ConstantRange*> funk_tran(Value* vred):
-		Funkcija koja definiše funkcije transfera koje obezbeđuju odgovarajuće menjanje intervala u zavisnosti od instrukcije programa. Ovde je suština programa, u zavisnosti od broja obrađenih instrukcija program je kompletniji.
+		>Funkcija koja definiše funkcije transfera koje obezbeđuju odgovarajuće menjanje intervala u zavisnosti od instrukcije programa. Ovde je suština programa, u zavisnosti od broja obrađenih instrukcija program je kompletniji.
 	* std::pair<VredResetke, ConstantRange*> vrati_trenutnu_vred(Value* vred):
-		Funkcija koja vraća trenutnu vrednost rešetke i interval za prosleđen element za dalju obradu.
+		>Funkcija koja vraća trenutnu vrednost rešetke i interval za prosleđen element za dalju obradu.
 	* std::queue<Value*> init(Function& F):
-		Funkcija koja vrši inicijalizaciju celokupnog programa. Kreće se kroz bazne blokove programa, kroz njihove instrukcije i inicijalzuje svakom elementu odgovarajući interval koji definiše.
+		>Funkcija koja vrši inicijalizaciju celokupnog programa. Kreće se kroz bazne blokove programa, kroz njihove instrukcije i inicijalzuje svakom elementu odgovarajući interval koji definiše.
 	* void dumpAnalysis():
-		Funkcija koja vrši ispis analize i koristi stream outs() definisan od strane LLVM-a. Bolji ispis se može postići korišćenjem DEBUG opcija (koje nažalost nismo mogli da implementiramo iz nama nepoznatih razloga).
+		>Funkcija koja vrši ispis analize i koristi stream outs() definisan od strane LLVM-a. Bolji ispis se može postići korišćenjem DEBUG opcija (koje nažalost nismo mogli da implementiramo iz nama nepoznatih razloga).
 	* static RegisterPass<AIProlaz> X("AI-PROLAZ", "Apstraktna interpretacija", false, false):
-		Funkcija koja registruje LLVM prolaz tako da se on zada kao opcija LLVM alatu. Predefinisana od strane LLVM-a.
+		>Funkcija koja registruje LLVM prolaz tako da se on zada kao opcija LLVM alatu. Predefinisana od strane LLVM-a.
 
 ## Opis rešenja problema (osnovne ideje, obrazloženja za ključne odluke, opis osnovnog algoritma):
 
 * Za pravilno prevođenje i linkovanje korišćen je alat **cmake** zajedno sa **make** alatom koji ceo proces automatizuju.
 * Program je pisan kao LLVM prolaz (pass) jer predstavlja najelegantniji način implementiranja algoritama apstraktne interpretacije ali i algoritama za statičku analizu programa uopšte.
-* Određen broj korišćenih funkcija je imala definisanu funkcionalnost od strane LLVM-a koju je trebalo prilagoditi ili nadograditi u svrhe ispunjenja cilja.
+* Određen broj korišćenih funkcija su imale definisanu funkcionalnost od strane LLVM-a koju je trebalo prilagoditi ili nadograditi u svrhe ispunjenja cilja.
 * Struktura programa prati (osim dela sa debug ispisom) LLVM-ovu dokumentaciju za pisanje LLVM prolaza datu na linku **http://llvm.org/docs/WritingAnLLVMPass.html#writing-an-llvm-pass-functionpass**.
 * Teorijska ideja programa je zasnovana na osnovu poznate teorije rađene na predavanjima (**http://www.verifikacijasoftvera.matf.bg.ac.rs/vs/predavanja/08_abstraktna_interpretacija/29_DimitrijeSpadijer_ApstraktnaInterpretacija.pdf**).
 * Ideja programa je da se na osnovu grafa kontrole podataka, implicitno kreiranog od strane LLVM-a, prođe kroz sve bazne blokove programa, samim tim i kroz sve instrukcije baznih blokova, zatim svakoj od promenljivih dodeli odgovarajuća vrednost rešetke (tj. intervala) koju definiše i zatim da se u skladu sa operacijama koje se nad tim promenljivama izvršavaju menjaju krajevi tih intervala.

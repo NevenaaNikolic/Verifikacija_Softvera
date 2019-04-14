@@ -13,7 +13,7 @@ Master Studije
 * llvm-7
 * cmake
 
-### Instalacija potrebni alata:
+### Instalacija potrebnih alata:
 * sudo apt install ime_alata (**za verzije bazirane na Ubuntu sistemu**)
 
 ### Test primeri su smešteni u folderu 'test'

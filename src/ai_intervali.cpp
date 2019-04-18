@@ -1,6 +1,7 @@
 #include <unordered_map>
 #include <queue>
 
+#include "llvm/IR/Constants.h"  // dodato zbog class llvm::ConstantInt
 #include "llvm/IR/ConstantRange.h"
 #include "llvm/IR/Instruction.h"
 #include "llvm/IR/Instructions.h"
@@ -24,8 +25,7 @@ class AIProlaz : public FunctionPass
 {
 public:
     static char ID;
-    AIProlaz() : FunctionPass(ID)
-	{}
+    AIProlaz() : FunctionPass(ID){}
 	
 	// Override-ujemo metod koji je vec definisan u llvm-u, ovde je sustina programa
     bool runOnFunction(Function& F) override
@@ -169,7 +169,14 @@ private:
 				_rezultat = r1.sub(r2);
 				return {VredResetke::ConstantRange, new ConstantRange(_rezultat)};
 				break;
-			
+
+			// Ako je mnozenje: novo
+			case Instruction::Mul:
+				_rezultat = r1.multiply(r2);  // definisana u 890 liniji "ConstantRange.cpp" fajla
+			  return {VredResetke::ConstantRange, new ConstantRange(_rezultat)};
+				break;
+
+			// Ako nije +,-,*
 			default:
 				return bazni_par;
 		}
@@ -249,11 +256,12 @@ private:
 		
 		for (auto& vred : _mapaIntervala)
 		{
+
 			if (!isa<Instruction>(vred.first))
 				continue;
 		
 			outs() << *cast<Instruction>(vred.first) << "\n";
-			
+
 			if (!vred.second)
 			{
 				outs() << "Nema rezultata\n";

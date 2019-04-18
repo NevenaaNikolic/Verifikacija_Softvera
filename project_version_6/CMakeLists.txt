@@ -1,0 +1,1 @@
+add_llvm_loadable_module(AI_INTERVALI ai_intervali.cpp)

@@ -7,7 +7,7 @@
 #include "llvm/IR/Instructions.h"
 #include "llvm/IR/Function.h"
 #include "llvm/Pass.h"
-#include "llvm/Support/Casting.h""
+#include "llvm/Support/Casting.h"
 #include "llvm/Support/raw_ostream.h"
 
 using namespace llvm;
@@ -15,7 +15,7 @@ using namespace llvm;
 // Definisemo nasu resetku
 enum class VredResetke : char
 {
-	// Ne koristimo Top jer ce interval biti ogranicen svojom sirinom
+	// Ne koristimo Vrh jer ce interval biti ogranicen svojom sirinom
 	// Inace bi mogli da koristimo inicijalno MAX_INT (samo sa celim brojevima radimo)
     ConstantRange,
     Dno,
